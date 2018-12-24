@@ -17,7 +17,9 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity{
 
+
     private static final int PERMISSIONS_REQUEST_CODE = 100;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-
         Button mBack_button = (Button) findViewById(R.id.back_button);
         Button mStart_pause_button = (Button) findViewById(R.id.start_pause_button);
         Button mNext_button = (Button) findViewById(R.id.next_button);
@@ -54,7 +55,8 @@ public class MainActivity extends AppCompatActivity{
                 if (v.getId() == R.id.back_button) {
 
                 }
-            }
+                }
+
         });
 
 
@@ -72,13 +74,21 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.next_button) {
+                    if (cursor.moveToFirst()) {
+                        int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                        Long id = cursor.getLong(fieldIndex);
+                        Uri imageUri = ContentUris.withAppendedId
+                                (MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
 
+                        ImageView mImageView = (ImageView) findViewById(R.id.imageView);
+                        mImageView.setImageURI(imageUri);
+                    }
+                    cursor.close();
                 }
             }
         });
 
     }
-
 
 
 
@@ -108,17 +118,6 @@ public class MainActivity extends AppCompatActivity{
                 null, // フィルタ用パラメータ
                 null // ソート (null ソートなし)
         );
-
-        if (cursor.moveToFirst()) {
-            int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-            Long id = cursor.getLong(fieldIndex);
-            Uri imageUri = ContentUris.withAppendedId
-                    (MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-
-            ImageView imageView = (ImageView) findViewById(R.id.imageView);
-            imageView.setImageURI(imageUri);
-        }
-        cursor.close();
     }
 
 }
