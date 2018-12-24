@@ -11,9 +11,11 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
 
@@ -38,7 +40,48 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getContentsInfo();
         }
+
+
+
+
+        Button mBack_button = (Button) findViewById(R.id.back_button);
+        Button mStart_pause_button = (Button) findViewById(R.id.start_pause_button);
+        Button mNext_button = (Button) findViewById(R.id.next_button);
+
+        mBack_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.back_button) {
+
+                }
+            }
+        });
+
+
+        mStart_pause_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.start_pause_button) {
+
+                }
+            }
+        });
+
+
+        mNext_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.next_button) {
+
+                }
+            }
+        });
+
     }
+
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -77,5 +120,6 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
     }
+
 }
 
