@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 null, // 項目(null = 全項目)
                 null, // フィルタ条件(null = フィルタなし)
                 null, // フィルタ用パラメータ
-                null // ソート (null ソートなし));
+                null // ソート (null ソートなし)
         );
 
         if (cursor.moveToFirst()) {
@@ -77,6 +77,5 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
     }
-
 }
 
