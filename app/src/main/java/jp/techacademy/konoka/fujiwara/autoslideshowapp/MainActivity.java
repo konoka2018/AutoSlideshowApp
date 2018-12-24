@@ -15,18 +15,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity{
-
+public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Android 6.0以降の場合
+        /*Android 6.0以降の場合のパーミッションの設定
+        ----------------------------------------------------------------------------------*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // パーミッションの許可状態を確認する
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
@@ -45,21 +44,34 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-        Button mBack_button = (Button) findViewById(R.id.back_button);
-        Button mStart_pause_button = (Button) findViewById(R.id.start_pause_button);
+        /*ここから下はボタンの設定 始まり
+        ----------------------------------------------------------------------------------*/
         Button mNext_button = (Button) findViewById(R.id.next_button);
-
-        mBack_button.setOnClickListener(new View.OnClickListener() {
+        mNext_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.back_button) {
+                if (v.getId() == R.id.next_button) {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            // indexからIDを取得し、そのIDから画像のURIを取得する
+                            int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                            Long id = cursor.getLong(fieldIndex); //画像のIDを取
+                            Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
+                                    .EXTERNAL_CONTENT_URI, id);
 
-                }
-                }
+                            Log.d("JavaTest", "URI : " + imageUri.toString());
 
+                            ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                            imageView.setImageURI(imageUri);
+
+                        } while (cursor.moveToNext());
+                    }
+                    cursor.close();
+                }
+            }
         });
 
-
+        Button mStart_pause_button = (Button) findViewById(R.id.start_pause_button);
         mStart_pause_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,56 +81,70 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-
-        mNext_button.setOnClickListener(new View.OnClickListener() {
+        Button mBack_button = (Button) findViewById(R.id.back_button);
+        mBack_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.next_button) {
-                    if (cursor.moveToFirst()) {
-                        int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                        Long id = cursor.getLong(fieldIndex);
-                        Uri imageUri = ContentUris.withAppendedId
-                                (MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                if (v.getId() == R.id.back_button) {
+                    if (cursor.moveToLast()) {
+                        do {
+                            // indexからIDを取得し、そのIDから画像のURIを取得する
+                            int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                            Long id = cursor.getLong(fieldIndex);
+                            Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
+                                    .EXTERNAL_CONTENT_URI, id);
 
-                        ImageView mImageView = (ImageView) findViewById(R.id.imageView);
-                        mImageView.setImageURI(imageUri);
+                            Log.d("JavaTest", "URI : " + imageUri.toString());
+
+                        } while (cursor.moveToNext());
                     }
                     cursor.close();
                 }
             }
         });
+        /*ボタンの設定 終わり
+        ----------------------------------------------------------------------------------*/
 
-    }
+    }/*オンクリエイトの蓋*/
 
 
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_CODE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getContentsInfo();
-                }
-                break;
-            default:
-                break;
+        /*ユーザのパーミッションへの選択結果を受け取る コード
+        ----------------------------------------------------------------------------------*/
+        @Override
+        public void onRequestPermissionsResult ( int requestCode, String[] permissions,
+        int[] grantResults){
+            switch (requestCode) {
+                case PERMISSIONS_REQUEST_CODE:
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        getContentsInfo();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
-    }
 
-    private void getContentsInfo() {
 
-        // 画像の情報を取得する
-        ContentResolver resolver = getContentResolver();
-        Cursor cursor = resolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // データの種類
-                null, // 項目(null = 全項目)
-                null, // フィルタ条件(null = フィルタなし)
-                null, // フィルタ用パラメータ
-                null // ソート (null ソートなし)
-        );
-    }
 
-}
+        /*Cursorを定義（データベース上の検索結果を格納するもの）
+        ----------------------------------------------------------------------------------*/
+        Cursor cursor; //Cursorの変数を定義
+        private void getContentsInfo () {
+
+            // 画像の情報を取得する
+            ContentResolver resolver = getContentResolver();
+            cursor = resolver.query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // データの種類
+                    null, // 項目(null = 全項目)
+                    null, // フィルタ条件(null = フィルタなし)
+                    null, // フィルタ用パラメータ
+                    null // ソート (null ソートなし)
+            );
+        }
+
+
+    }/*MainActivityの蓋*/
+
+
 
