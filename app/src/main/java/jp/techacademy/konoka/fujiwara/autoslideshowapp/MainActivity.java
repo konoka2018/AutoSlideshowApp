@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         mNext_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cursor.moveToNext() == false){
+                if (cursor.moveToNext() == false) {
                     cursor.moveToFirst();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
+                }
 
                     int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                     Long id = cursor.getLong(fieldIndex);
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
                     imageView = (ImageView) findViewById(R.id.imageView);
                     imageView.setImageURI(imageUri);
-                }
+
             }
         });
 
@@ -101,9 +102,10 @@ public class MainActivity extends AppCompatActivity {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() { //runの中身はボタンNEXTと同じ
-                                    if (cursor.moveToNext() == false){
+                                    if (cursor.moveToNext() == false) {
                                         cursor.moveToFirst();//こちらで次の画像へ指し示すようにして，以下
                                         // の画像設定の処理を行う。
+                                    }
 
                                         int fieldIndex = cursor.getColumnIndex(MediaStore.Images
                                                 .Media._ID);
@@ -116,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
                                         imageView = (ImageView) findViewById(R.id.imageView);
                                         imageView.setImageURI(imageUri);
                                     }
-                                }
                             });
                         }
                     }, 2000, 500);    // 最初に始動させるまで 100ミリ秒、ループの間隔を
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (cursor.moveToPrevious() == false) {
                     cursor.moveToLast();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
+                }
 
                     int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                     Long id = cursor.getLong(fieldIndex);
@@ -144,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
                     imageView = (ImageView) findViewById(R.id.imageView);
                     imageView.setImageURI(imageUri);
-                }
+
             }
         });
         /*ボタンの設定 終わり
