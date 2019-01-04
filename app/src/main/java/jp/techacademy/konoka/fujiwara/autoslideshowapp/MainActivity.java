@@ -11,11 +11,9 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Button;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*ここから下はボタン設定 始まり
         ----------------------------------------------------------------------------------*/
-        Button mNext_button = (Button) findViewById(R.id.next_button);
+        final Button mNext_button = (Button) findViewById(R.id.next_button);
         mNext_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,11 +71,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button mStart_pause_button = (Button) findViewById(R.id.start_pause_button);
+
+        final Button mBack_button = (Button) findViewById(R.id.back_button);
+        mBack_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cursor.moveToPrevious() == false) {
+                    cursor.moveToLast();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
+                }
+                showImage();
+            }
+        });
+
+
+        final Button mStart_pause_button = (Button) findViewById(R.id.start_pause_button);
         mStart_pause_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.start_pause_button) {
+                if (null == mTimer){
 
                     // タイマーの作成
                     mTimer = new Timer();
@@ -96,31 +107,27 @@ public class MainActivity extends AppCompatActivity {
                                         // の画像設定の処理を行う。
                                     }
                                      showImage();
+                                     mNext_button.setEnabled(false);
+                                     mBack_button.setEnabled(false);
+                                     mStart_pause_button.setText("停止");
                                     }
                             });
                         }
-                    }, 2000, 500);    // 最初に始動させるまで 100ミリ秒、ループの間隔を
+                    }, 2000, 2000);    // 最初に始動させるまで 100ミリ秒、ループの間隔を
                     // 100ミリ秒 に設定
-                }else{
+                }else if (v.getId() == R.id.start_pause_button){
                     mTimer.cancel();
                     mTimer = null;
+
+                    mNext_button.setEnabled(true);
+                    mBack_button.setEnabled(true);
+                    mStart_pause_button.setText("再生");
                 }
             }
         });
 
-        Button mBack_button = (Button) findViewById(R.id.back_button);
-        mBack_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (cursor.moveToPrevious() == false) {
-                    cursor.moveToLast();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
-                }
-                showImage();
-            }
-        });
         /*ボタンの設定 終わり
         ----------------------------------------------------------------------------------*/
-
     }/*オンクリエイトの蓋*/
 
 
@@ -143,22 +150,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*Cursorを定義（データベース上の検索結果を格納するもの）
-        ----------------------------------------------------------------------------------*/
+         ----------------------------------------------------------------------------------*/
         Cursor cursor; //Cursorの変数を定義
-
-
-        //画像のIDを取得して表示する
-        public void showImage() {
-            int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-            Long id = cursor.getLong(fieldIndex);
-            Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
-                    .EXTERNAL_CONTENT_URI, id);
-
-            imageView = (ImageView) findViewById(R.id.imageView);
-            imageView.setImageURI(imageUri);
-        }
-
-
         private void getContentsInfo () {
 
             // 画像の情報を取得する
@@ -175,6 +168,18 @@ public class MainActivity extends AppCompatActivity {
                 showImage();
             }
         }
+
+        //画像のIDを取得して表示する
+        public void showImage() {
+        int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+        Long id = cursor.getLong(fieldIndex);
+        Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
+                .EXTERNAL_CONTENT_URI, id);
+
+        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView.setImageURI(imageUri);
+        }
+
 
 
         @Override
