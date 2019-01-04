@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         mNext_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.next_button) {
-                    cursor.moveToNext();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
+                if (cursor.moveToNext() == false){
+                    cursor.moveToFirst();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
 
                     int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                     Long id = cursor.getLong(fieldIndex);
@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
         mStart_pause_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.start_pause_button) {
+                if (cursor.moveToNext() == false) {
+                    cursor.moveToFirst();
 
                     // タイマーの作成
                     mTimer = new Timer();
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }, 2000, 500);    // 最初に始動させるまで 100ミリ秒、ループの間隔を
                     // 100ミリ秒 に設定
-                }else if (mTimer != null){
+                }else{
                     mTimer.cancel();
                     mTimer = null;
                 }
@@ -130,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
         mBack_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.back_button) {
-                    cursor.moveToPrevious();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
+                if (cursor.moveToPrevious() == false) {
+                    cursor.moveToLast();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
 
                     int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                     Long id = cursor.getLong(fieldIndex);
