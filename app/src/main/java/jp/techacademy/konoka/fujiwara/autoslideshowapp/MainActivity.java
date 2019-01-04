@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     /*--------------------------------------------------------------------------------*/
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,17 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 if (cursor.moveToNext() == false) {
                     cursor.moveToFirst();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
                 }
-
-                    int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                    Long id = cursor.getLong(fieldIndex);
-                    Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
-                            .EXTERNAL_CONTENT_URI, id);
-
-                    Log.d("JavaTest", "URI : " + imageUri.toString());
-
-                    imageView = (ImageView) findViewById(R.id.imageView);
-                    imageView.setImageURI(imageUri);
-
+                showImage();
             }
         });
 
@@ -106,17 +95,7 @@ public class MainActivity extends AppCompatActivity {
                                         cursor.moveToFirst();//こちらで次の画像へ指し示すようにして，以下
                                         // の画像設定の処理を行う。
                                     }
-
-                                        int fieldIndex = cursor.getColumnIndex(MediaStore.Images
-                                                .Media._ID);
-                                        Long id = cursor.getLong(fieldIndex);
-                                        Uri imageUri = ContentUris.withAppendedId(MediaStore.Images
-                                                .Media.EXTERNAL_CONTENT_URI, id);
-
-                                        Log.d("JavaTest", "URI : " + imageUri.toString());
-
-                                        imageView = (ImageView) findViewById(R.id.imageView);
-                                        imageView.setImageURI(imageUri);
+                                     showImage();
                                     }
                             });
                         }
@@ -136,17 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 if (cursor.moveToPrevious() == false) {
                     cursor.moveToLast();//こちらで次の画像へ指し示すようにして，以下の画像設定の処理を行う。
                 }
-
-                    int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                    Long id = cursor.getLong(fieldIndex);
-                    Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
-                            .EXTERNAL_CONTENT_URI, id);
-
-                    Log.d("JavaTest", "URI : " + imageUri.toString());
-
-                    imageView = (ImageView) findViewById(R.id.imageView);
-                    imageView.setImageURI(imageUri);
-
+                showImage();
             }
         });
         /*ボタンの設定 終わり
@@ -176,6 +145,20 @@ public class MainActivity extends AppCompatActivity {
         /*Cursorを定義（データベース上の検索結果を格納するもの）
         ----------------------------------------------------------------------------------*/
         Cursor cursor; //Cursorの変数を定義
+
+
+        //画像のIDを取得して表示する
+        public void showImage() {
+            int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+            Long id = cursor.getLong(fieldIndex);
+            Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
+                    .EXTERNAL_CONTENT_URI, id);
+
+            imageView = (ImageView) findViewById(R.id.imageView);
+            imageView.setImageURI(imageUri);
+        }
+
+
         private void getContentsInfo () {
 
             // 画像の情報を取得する
@@ -189,16 +172,10 @@ public class MainActivity extends AppCompatActivity {
             );
 
             if (cursor.moveToNext());{
-
-                int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                Long id = cursor.getLong(fieldIndex);
-                Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
-                        .EXTERNAL_CONTENT_URI, id);
-
-                imageView = (ImageView) findViewById(R.id.imageView);
-                imageView.setImageURI(imageUri);
+                showImage();
             }
         }
+
 
         @Override
         protected void onDestroy() {
