@@ -87,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
         mStart_pause_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cursor.moveToNext() == false) {
-                    cursor.moveToFirst();
+                if (v.getId() == R.id.start_pause_button) {
 
                     // タイマーの作成
                     mTimer = new Timer();
@@ -102,19 +101,21 @@ public class MainActivity extends AppCompatActivity {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() { //runの中身はボタンNEXTと同じ
-                                    cursor.moveToNext();
+                                    if (cursor.moveToNext() == false){
+                                        cursor.moveToFirst();//こちらで次の画像へ指し示すようにして，以下
+                                        // の画像設定の処理を行う。
 
-                                    int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media
-                                            ._ID);
-                                    Long id = cursor.getLong(fieldIndex);
-                                    Uri imageUri = ContentUris.withAppendedId(MediaStore.Images
-                                            .Media
-                                            .EXTERNAL_CONTENT_URI, id);
+                                        int fieldIndex = cursor.getColumnIndex(MediaStore.Images
+                                                .Media._ID);
+                                        Long id = cursor.getLong(fieldIndex);
+                                        Uri imageUri = ContentUris.withAppendedId(MediaStore.Images
+                                                .Media.EXTERNAL_CONTENT_URI, id);
 
-                                    Log.d("JavaTest", "URI : " + imageUri.toString());
+                                        Log.d("JavaTest", "URI : " + imageUri.toString());
 
-                                    imageView = (ImageView) findViewById(R.id.imageView);
-                                    imageView.setImageURI(imageUri);
+                                        imageView = (ImageView) findViewById(R.id.imageView);
+                                        imageView.setImageURI(imageUri);
+                                    }
                                 }
                             });
                         }
