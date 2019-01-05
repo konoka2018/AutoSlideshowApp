@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                      showImage();
                                      mNext_button.setEnabled(false);
-                                     mBack_button.setEnabled(false);
-                                     mStart_pause_button.setText("停止");
+                                    mBack_button.setEnabled(false);
+                                    mStart_pause_button.setText("停止");
                                     }
                             });
                         }
@@ -151,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
+
         /*Cursorを定義（データベース上の検索結果を格納するもの）
          ----------------------------------------------------------------------------------*/
         Cursor cursor; //Cursorの変数を定義
@@ -173,15 +175,16 @@ public class MainActivity extends AppCompatActivity {
 
         //画像のIDを取得して表示する
         public void showImage() {
-        int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-        Long id = cursor.getLong(fieldIndex);
-        Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
+            if (cursor.getCount() == 0) return;
+
+            int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+            Long id = cursor.getLong(fieldIndex);
+            Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media
                 .EXTERNAL_CONTENT_URI, id);
 
-        imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageURI(imageUri);
+            imageView = (ImageView) findViewById(R.id.imageView);
+            imageView.setImageURI(imageUri);
         }
-
 
 
         @Override
