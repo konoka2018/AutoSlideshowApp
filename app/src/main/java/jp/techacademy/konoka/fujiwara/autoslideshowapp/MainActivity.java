@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     // タイマー用の時間のための変数
     double mTimerSec = 0.0;
-    Handler mHandler = new Handler();
+    Handler mHandler = new Handler(); //他のスレッドから他の操作をする時にハンドラーを介して
+                                      //エディットなどを操作しないといけない。
     /*--------------------------------------------------------------------------------*/
 
 
@@ -91,20 +92,21 @@ public class MainActivity extends AppCompatActivity {
                 if (null == mTimer){
 
                     // タイマーの作成
-                    mTimer = new Timer();
+                    mTimer = new Timer(); //別のスレッドを作る
 
                     // タイマーの始動
-                    mTimer.schedule(new TimerTask() {
+                    mTimer.schedule(new TimerTask() { //スケジュールを使うことで実際に動く
                         @Override
-                        public void run() {
+                        public void run() { //タイマーに対してのRUN
                             mTimerSec += 0.1;
 
-                            mHandler.post(new Runnable() {
+                            mHandler.post(new Runnable() { //ハンドラーを通してメインスレッ
+                                                           //ドを指示を出す。
                                 @Override
-                                public void run() { //runの中身はボタンNEXTと同じ
+                                public void run() { //メインメゾットのrunの中身はボタンNEXTと同じ
                                     if (cursor.moveToNext() == false) {
                                         cursor.moveToFirst();//こちらで次の画像へ指し示すようにして，以下
-                                        // の画像設定の処理を行う。
+                                                             // の画像設定の処理を行う。
                                     }
                                      showImage();
                                      mNext_button.setEnabled(false);
